@@ -14,6 +14,7 @@ export async function fetchProviders(city, state) {
 
 export async function fetchProviderDetails(npi) {
     const url = `${BASE_URL}?version=2.1&number=${npi}`;
+
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -23,6 +24,3 @@ export async function fetchProviderDetails(npi) {
     const data = await response.json();
     return data.results[0];
 }
-//fetch render
-
-export async function fetchProviders(city = "Boston") {}
