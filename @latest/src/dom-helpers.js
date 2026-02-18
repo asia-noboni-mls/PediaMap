@@ -131,7 +131,7 @@ export function renderProviderDetails(detailsEl, provider) {
 }
 
 // Show a "select a provider" placeholder 
-export function renderPlaceholder(detailsEl) {
+export function renderDetailsPlaceholder(detailsEl) {
   detailsEl.innerHTML = `
     <div class="placeholder">
       <span>👆</span>
