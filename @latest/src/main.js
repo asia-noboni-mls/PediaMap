@@ -22,3 +22,16 @@ document.querySelector("#app").innerHTML = `
 `;
 
 setupCounter(document.querySelector("#counter"));
+
+const searchForm = document.querySelector("#search-form");
+
+searchForm.addEventListener("submit", (event) => {
+  event.preventDefault(); // 🚫 stop page reload
+
+  const formData = new FormData(searchForm);
+  const city = formData.get("city");
+
+  console.log("City entered:", city);
+
+  searchForm.reset(); // clears the input
+});
