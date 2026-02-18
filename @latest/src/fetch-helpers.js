@@ -23,3 +23,6 @@ export async function fetchProviderDetails(npi) {
     const data = await response.json();
     return data.results[0];
 }
+//fetch render
+
+export async function fetchProviders(city = "Boston") {}
