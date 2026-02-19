@@ -1,59 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PediaMap | Find Pediatric Providers</title>
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/src/styles.css" />
 </head>
 
 <body>
 
   <!-- Header -->
   <header>
-    <h1>PediaMap 🧸</h1>
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🩺</span>
+        <span class="logo-text">Pedia<span class="logo-accent">Map</span></span>
+      </div>
+      <p class="tagline">Finding the right care for your little ones</p>
+    </div>
   </header>
 
-  <!-- Main Content -->
   <main>
 
-    <!-- Search Section -->
-    <section aria-labelledby="search-heading">
+    <!-- Search Section (centered above grid) -->
+    <section class="search-section" aria-labelledby="search-heading">
       <h2 id="search-heading">Search for Pediatric Providers</h2>
+      <form id="search-form" aria-labelledby="search-heading">
+        <div class="form-row">
 
-      <form id="search-form">
-        <div>
-          <label for="city-input">City</label>
-          <input
-            type="text"
-            id="city-input"
-            name="city"
-            required
-          />
+          <div class="form-group">
+            <label for="city-input">City</label>
+            <input type="text" id="city-input" name="city" placeholder="e.g. Boston" required />
+          </div>
+
+          <div class="form-group">
+            <label for="state-input">State</label>
+            <input type="text" id="state-input" name="state" placeholder="e.g. MA" maxlength="2" required />
+          </div>
+
+          <button type="submit">
+            <span>🔍</span> Search
+          </button>
+
         </div>
-
-        <button type="submit">Search</button>
       </form>
     </section>
 
-    <!-- Collection Section -->
-    <section aria-labelledby="collection-heading">
+    <!-- Provider Grid Section -->
+    <section class="providers-section" aria-labelledby="collection-heading">
       <h2 id="collection-heading">Pediatric Providers</h2>
-      <ul id="provider-list"></ul>
-    </section>
-
-    <!-- Single Item Section -->
-    <section aria-labelledby="single-provider-heading">
-      <h2 id="single-provider-heading">Provider Details</h2>
-      <div id="provider-details">
-        <p>Select a provider to view more details.</p>
-      </div>
+      <!-- Cards are injected here as a grid by renderProviderList() -->
+      <div id="provider-grid"></div>
     </section>
 
   </main>
 
-  <script type="module" src="/main.js"></script>
+  <!-- Modal Overlay (hidden by default) -->
+  <div id="modal-overlay" class="modal-overlay" aria-modal="true" role="dialog" aria-labelledby="modal-provider-name"
+    hidden>
+    <div class="modal-card">
+
+      <!-- Close button -->
+      <button class="modal-close" id="modal-close-btn" aria-label="Close modal">✕</button>
+
+      <!-- Modal content is injected here by renderProviderDetails() -->
+      <div id="modal-content"></div>
+
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
 </body>
-</html>
 
 </html>
