@@ -6,7 +6,7 @@ PediaMap is an interactive web application that helps users find pediatric healt
 ---
 
 ## Live Link
-https://asia-noboni-mls.github.io/pediaMap/
+https://asia-noboni-mls.github.io/PediaMap/
 
 ---
 
@@ -44,7 +44,7 @@ https://asia-noboni-mls.github.io/pediaMap/
 ## Setup Instructions
 1. Clone the repository:  
    ```bash
-   git clone git@github.com:asia-noboni-mls/pediaMap.git
+   git clone git@github.com:asia-noboni-mls/PediaMap.git
 Install dependencies:
 
 npm install

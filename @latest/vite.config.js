@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-    base: "/pediaMap/",
+    base: "/PediaMap/",
     server: {
         proxy: {
             '/npi-api': {
