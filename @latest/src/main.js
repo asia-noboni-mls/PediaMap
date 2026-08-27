@@ -8,6 +8,7 @@ import {
   removeFavorite,
   renderFavorites,
   filterProviders,
+  sortProviders,
   addFavoriteButton,
   addProviderMap,
 } from './dom-helpers.js';
@@ -21,6 +22,7 @@ const modalCloseBtn = document.getElementById('modal-close-btn');
 const modalContentEl = document.getElementById('modal-content');
 const genderFilter = document.getElementById('gender-filter');
 const typeFilter = document.getElementById('type-filter');
+const sortFilter = document.getElementById('sort-filter');
 
 // Stores the full fetched provider list for filtering
 let allProviders = [];
@@ -60,16 +62,18 @@ function handleRemoveFavorite(npi) {
   renderFavorites(favoritesGridEl, handleRemoveFavorite);
 }
 
-// Filter the in-memory provider list and re-render
+// Filter and sort the in-memory provider list, then re-render
 function applyFilters() {
   const gender = genderFilter.value;
   const type = typeFilter.value;
   const filtered = filterProviders(allProviders, gender, type);
-  renderProviderList(providerGridEl, filtered, handleProviderClick);
+  const sorted = sortProviders(filtered, sortFilter.value);
+  renderProviderList(providerGridEl, sorted, handleProviderClick);
 }
 
 genderFilter.addEventListener('change', applyFilters);
 typeFilter.addEventListener('change', applyFilters);
+sortFilter.addEventListener('change', applyFilters);
 
 // Fetch and display provider details in the modal
 async function handleProviderClick(provider) {
@@ -99,13 +103,14 @@ async function handleSearchSubmit(event) {
   // Reset filters when a new search is made
   genderFilter.value = 'all';
   typeFilter.value = 'all';
+  sortFilter.value = 'name-asc';
 
   showLoading(providerGridEl);
 
   try {
     const providers = await fetchProviders(city, state);
     allProviders = providers;
-    renderProviderList(providerGridEl, providers, handleProviderClick);
+    renderProviderList(providerGridEl, sortProviders(providers, sortFilter.value), handleProviderClick);
   } catch (error) {
     showError(providerGridEl, error.message);
   }
@@ -119,7 +124,7 @@ async function init() {
   try {
     const providers = await fetchProviders('Boston', 'MA');
     allProviders = providers;
-    renderProviderList(providerGridEl, providers, handleProviderClick);
+    renderProviderList(providerGridEl, sortProviders(providers, sortFilter.value), handleProviderClick);
   } catch (error) {
     showError(providerGridEl, error.message);
   }

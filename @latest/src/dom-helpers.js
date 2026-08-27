@@ -1,3 +1,11 @@
+// Escape a value before interpolating it into innerHTML — provider names and
+// addresses come from a public, self-reported registry and aren't trustworthy.
+function escapeHtml(value) {
+  const div = document.createElement('div');
+  div.textContent = String(value ?? '');
+  return div.innerHTML;
+}
+
 // Get provider display name
 function getProviderName(provider) {
   const basic = provider.basic;
@@ -12,6 +20,22 @@ function getProviderLocation(provider) {
   const location = addresses.find(a => a.address_purpose === 'LOCATION') || addresses[0];
   if (!location) return 'Location unavailable';
   return `${location.city}, ${location.state}`;
+}
+
+// Sort providers by name or city
+export function sortProviders(providers, sortBy) {
+  const sorted = [...providers];
+
+  sorted.sort((a, b) => {
+    if (sortBy === 'city-asc') {
+      return getProviderLocation(a).localeCompare(getProviderLocation(b));
+    }
+    const nameA = getProviderName(a);
+    const nameB = getProviderName(b);
+    return sortBy === 'name-desc' ? nameB.localeCompare(nameA) : nameA.localeCompare(nameB);
+  });
+
+  return sorted;
 }
 
 // Render provider cards into the grid
@@ -33,8 +57,8 @@ export function renderProviderList(gridEl, providers, onCardClick) {
 
     card.innerHTML = `
       <div class="card-avatar">👶</div>
-      <div class="card-name">${name}</div>
-      <div class="card-location">📍 ${location}</div>
+      <div class="card-name">${escapeHtml(name)}</div>
+      <div class="card-location">📍 ${escapeHtml(location)}</div>
       <div class="card-cta">View Details →</div>
     `;
 
@@ -55,7 +79,7 @@ export function renderProviderDetails(modalContentEl, provider) {
   const addr = addresses.find(a => a.address_purpose === 'LOCATION') || addresses[0] || {};
   const street = [addr.address_1, addr.address_2].filter(Boolean).join(', ');
   const cityStateZip = [addr.city, addr.state, addr.postal_code?.slice(0, 5)].filter(Boolean).join(', ');
-  const fullAddress = [street, cityStateZip].filter(Boolean).join('<br>') || 'Not available';
+  const fullAddress = [street, cityStateZip].filter(Boolean).map(escapeHtml).join('<br>') || 'Not available';
 
   const rawPhone = addr.telephone_number || '';
   const digits = rawPhone.replace(/\D/g, '');
@@ -69,22 +93,22 @@ export function renderProviderDetails(modalContentEl, provider) {
   modalContentEl.innerHTML = `
     <div class="modal-header">
       <div class="modal-avatar">🩺</div>
-      <div id="modal-provider-name" class="modal-name">${name}</div>
-      ${credential ? `<div class="modal-credential">${credential}</div>` : ''}
+      <div id="modal-provider-name" class="modal-name">${escapeHtml(name)}</div>
+      ${credential ? `<div class="modal-credential">${escapeHtml(credential)}</div>` : ''}
     </div>
     <div class="modal-body">
       <div class="modal-detail-row">
         <div class="modal-detail-icon">🏥</div>
         <div>
           <div class="modal-detail-label">Specialty</div>
-          <div class="modal-detail-value">${specialty}</div>
+          <div class="modal-detail-value">${escapeHtml(specialty)}</div>
         </div>
       </div>
       <div class="modal-detail-row">
         <div class="modal-detail-icon">📞</div>
         <div>
           <div class="modal-detail-label">Phone</div>
-          <div class="modal-detail-value">${phone}</div>
+          <div class="modal-detail-value">${escapeHtml(phone)}</div>
         </div>
       </div>
       <div class="modal-detail-row">
@@ -98,7 +122,7 @@ export function renderProviderDetails(modalContentEl, provider) {
         <div class="modal-detail-icon">🪪</div>
         <div>
           <div class="modal-detail-label">NPI Number</div>
-          <div class="modal-detail-value">${provider.number}</div>
+          <div class="modal-detail-value">${escapeHtml(provider.number)}</div>
         </div>
       </div>
     </div>
@@ -201,9 +225,9 @@ export function renderFavorites(favoritesGridEl, onRemove) {
 
     card.innerHTML = `
       <div class="card-avatar">⭐</div>
-      <div class="card-name">${fav.name}</div>
-      <div class="card-location">📍 ${fav.location}</div>
-      <button class="remove-btn" data-npi="${fav.npi}">Remove</button>
+      <div class="card-name">${escapeHtml(fav.name)}</div>
+      <div class="card-location">📍 ${escapeHtml(fav.location)}</div>
+      <button class="remove-btn" data-npi="${escapeHtml(fav.npi)}">Remove</button>
     `;
 
     card.querySelector('.remove-btn').addEventListener('click', (e) => {
@@ -240,5 +264,5 @@ export function showLoading(el) {
 
 // Show an error message
 export function showError(el, message) {
-  el.innerHTML = `<div class="error">⚠️ ${message}</div>`;
+  el.innerHTML = `<div class="error">⚠️ ${escapeHtml(message)}</div>`;
 }
